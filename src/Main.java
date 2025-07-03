@@ -119,11 +119,7 @@ public class  Main extends JFrame implements KeyListener
     {
         switch (evt.getKeyCode()) {
 
-            case KeyEvent.VK_SPACE:
-                dinoY =360;
-                break;
-
-            case KeyEvent.VK_DOWN:
+            case KeyEvent.VK_SPACE, KeyEvent.VK_DOWN:
                 dinoY =360;
                 break;
         }
