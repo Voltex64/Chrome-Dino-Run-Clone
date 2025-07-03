@@ -1,0 +1,1 @@
+So this project isn't entierly new, this was my final project in my AP CS A class. The one I had found on my old laptop didn't seem complete (or maybe it was and I suck lol), so this is a sort of cleaned up version.
