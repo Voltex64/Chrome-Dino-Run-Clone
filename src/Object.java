@@ -6,9 +6,9 @@ public class Object
     Image img;
     int xCord=1280;
     int yCord;
-   int width;
-   int height;
-
+    int width;
+    int height;
+    static String birdAnim = "img/bird.png";
    public Object()
    {
        setObject();
@@ -19,10 +19,10 @@ public class Object
         int rand = gen.nextInt(2);
         if (rand==0)
         {
-            img = Toolkit.getDefaultToolkit().getImage("bird.png");
+            img = Toolkit.getDefaultToolkit().getImage("img/bird.png");
             rand = gen.nextInt(2);
             if (rand==0)
-                yCord=280;
+                yCord=300;
             else
                 yCord=360;
             width=115;
@@ -30,7 +30,7 @@ public class Object
         }
         else
         {
-            img = Toolkit.getDefaultToolkit().getImage("cacti.png");
+            img = Toolkit.getDefaultToolkit().getImage("img/cacti.png");
             yCord=360;
             width=50;
             height=100;
@@ -50,17 +50,14 @@ public class Object
     {
         return img;
     }
-
     public int returnXCord()
     {
         return xCord;
     }
-
     public int returnYCord()
     {
         return yCord;
     }
-
     public int returnWidth()
     {
         return width;
@@ -69,4 +66,5 @@ public class Object
     {
         return height;
     }
+
 }
