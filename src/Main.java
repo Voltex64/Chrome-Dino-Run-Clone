@@ -11,10 +11,14 @@ public class  Main extends JFrame implements KeyListener
     private static final int UPDATE_PERIOD =10;
     static public int dinoX=150;
     static public int dinoY =360;
+    static public String dinoAnim= "img/DinoLeft.png";
+    static public int dinoWidth= 100;
+    static public int dinoHeight= 100;
+     public boolean isDucking= false;
     int yourScore=0;
     int speed=5;
     Object obj= new Object();
-    Rectangle dinoRect = new Rectangle(dinoX,dinoY,100,100);
+    Rectangle dinoRect = new Rectangle(dinoX,dinoY,dinoWidth,dinoHeight);
     Rectangle imgRect = new Rectangle(obj.returnXCord(),obj.returnYCord(),obj.returnWidth(),obj.returnHeight());
 
 
@@ -38,16 +42,24 @@ public class  Main extends JFrame implements KeyListener
             repaint();//refresh te JFrame, call back paintComponent
         };
         //Allocate Timer to run updateTask's actionPerformed() after every delay sec
-
+        ActionListener updateDinoTask= _ -> {
+            updateAnim(); //update the (x,y)position
+            repaint();//refresh te JFrame, call back paintComponent
+        };
 
         Timer time = new Timer(UPDATE_PERIOD,updateTask);
-        //time.setDelay(1);
         time.start();
+
+        Timer dinoTime = new Timer(UPDATE_PERIOD,updateDinoTask);
+        dinoTime.setDelay(500);
+        dinoTime.start();
+
+
 
     }
     public void update ()
     {
-        if(obj.returnXCord()<20)
+        if(obj.returnXCord()<10)
         {
             obj.setObject();
         }
@@ -66,19 +78,45 @@ public class  Main extends JFrame implements KeyListener
         }
     }
 
+    public void updateAnim()
+    {
+        if(isDucking)
+        {
+            if(dinoAnim.equals("img/DinoDuckLeft.png"))
+                dinoAnim= "img/DinoDuckRight.png";
+            else if (dinoAnim.equals("img/DinoDuckRight.png"))
+                dinoAnim= "img/DinoDuckLeft.png";
+
+        }
+        else
+        {
+            if(dinoAnim.equals("img/DinoLeft.png"))
+                dinoAnim="img/DinoRight.png";
+            else if(dinoAnim.equals("img/DinoRight.png"))
+                dinoAnim="img/DinoLeft.png";
+        }
+
+        if(obj.returnImage().equals("img/bird.png"))
+        {
+
+        }
+
+    }
+
 
     private class DrawCanvas extends JPanel
     {
+
         @Override
         public void paintComponent(Graphics g)
         {
-            dinoRect.setBounds(dinoX,dinoY,100,100);
-            imgRect.setBounds(obj.returnXCord(),obj.returnYCord(),50,100);
+            dinoRect.setBounds(dinoX,dinoY,dinoWidth,dinoHeight);
+            imgRect.setBounds(obj.returnXCord(),obj.returnYCord(),obj.returnWidth(),obj.returnHeight());
             super.paintComponent(g); //paint parent's background
-            Image img1 = Toolkit.getDefaultToolkit().getImage("background.png");
+            Image img1 = Toolkit.getDefaultToolkit().getImage("img/background.png");
             g.drawImage(img1,-100,-250,this);
-            Image img2 = Toolkit.getDefaultToolkit().getImage("dino.png");
-            g.drawImage(img2,dinoX, dinoY,100,100,this);
+            Image img2 = Toolkit.getDefaultToolkit().getImage(dinoAnim);
+            g.drawImage(img2,dinoX, dinoY,dinoWidth,dinoHeight,this);
             g.drawImage(obj.returnImage(), obj.returnXCord(), obj.returnYCord(), obj.returnWidth(), obj.returnHeight(), this);
             g.setColor(Color.black);
             Font f=new Font("Courier", Font.PLAIN,20);
@@ -107,10 +145,15 @@ public class  Main extends JFrame implements KeyListener
     {
         switch (evt.getKeyCode()) {
             case KeyEvent.VK_SPACE:
+                dinoAnim="img/dino.png";
                 dinoY =160;
                 break;
 
             case KeyEvent.VK_DOWN:
+                dinoAnim="img/DinoDuckLeft.png";
+                isDucking= true;
+                dinoWidth=118;
+                dinoHeight=85;
                 dinoY =380;
                 break;
         }
@@ -121,6 +164,10 @@ public class  Main extends JFrame implements KeyListener
 
             case KeyEvent.VK_SPACE, KeyEvent.VK_DOWN:
                 dinoY =360;
+                dinoWidth=100;
+                dinoHeight=100;
+                dinoAnim="img/DinoLeft.png";
+                isDucking= false;
                 break;
         }
     }
