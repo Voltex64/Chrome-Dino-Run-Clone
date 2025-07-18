@@ -8,8 +8,8 @@ public class Object
     int yCord;
     int width;
     int height;
-    static String birdAnim = "img/bird.png";
-   public Object()
+    String fileName;
+    public Object()
    {
        setObject();
    }
@@ -17,23 +17,27 @@ public class Object
     {
         Random gen  = new Random();
         int rand = gen.nextInt(2);
+
         if (rand==0)
         {
-            img = Toolkit.getDefaultToolkit().getImage("img/bird.png");
+            fileName="img/bird/birdDown.png";
+            img = Toolkit.getDefaultToolkit().getImage(fileName);
+            width=115;
+            height=80;
             rand = gen.nextInt(2);
+
             if (rand==0)
                 yCord=300;
             else
                 yCord=360;
-            width=115;
-            height=80;
         }
         else
         {
-            img = Toolkit.getDefaultToolkit().getImage("img/cacti.png");
-            yCord=360;
+            fileName="img/cacti/cacti.png";
+            img = Toolkit.getDefaultToolkit().getImage("img/cacti/cacti.png");
             width=50;
             height=100;
+            yCord=360;
         }
     }
 
@@ -45,7 +49,16 @@ public class Object
     {
         xCord=1280;
     }
-
+    public void setAnim (String anim)
+    {
+        fileName=anim;
+    }
+    public void updateAnim()
+    {
+        img = Toolkit.getDefaultToolkit().getImage(fileName);
+        width=115;
+        height=80;
+    }
     public Image returnImage()
     {
         return img;
@@ -65,6 +78,10 @@ public class Object
     public int returnHeight()
     {
         return height;
+    }
+    public String returnFileName()
+    {
+        return fileName;
     }
 
 }
