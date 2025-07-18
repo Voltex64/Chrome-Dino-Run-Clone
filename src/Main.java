@@ -5,19 +5,20 @@ import javax.swing.*;
 
 public class  Main extends JFrame implements KeyListener
 {
-    //Define Name-constants
     private static final int CANVAS_WIDTH =1280;
     private static final int CANVAS_HEIGHT =720;
     private static final int UPDATE_PERIOD =10;
     static public int dinoX=150;
     static public int dinoY =360;
-    static public String dinoAnim= "img/DinoLeft.png";
+    static public String dinoAnim= "img/dino/dinoLeft.png";
     static public int dinoWidth= 100;
     static public int dinoHeight= 100;
-     public boolean isDucking= false;
+    public boolean isDucking= false;
     int yourScore=0;
+    int constant=1;
     int speed=5;
-    Object obj= new Object();
+    static Object obj= new Object();
+    static String file= obj.returnFileName();
     Rectangle dinoRect = new Rectangle(dinoX,dinoY,dinoWidth,dinoHeight);
     Rectangle imgRect = new Rectangle(obj.returnXCord(),obj.returnYCord(),obj.returnWidth(),obj.returnHeight());
 
@@ -25,52 +26,57 @@ public class  Main extends JFrame implements KeyListener
     //width and height
 //Constructor to set up the GUI components and event handlers
     public  Main() {
-        // the drawing canvas
         DrawCanvas canvas = new DrawCanvas();
         canvas.setPreferredSize(new Dimension(CANVAS_WIDTH, CANVAS_HEIGHT));
         this.setContentPane(canvas);
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.pack();
         this.setTitle("");
-        this.setVisible(true);           //makes game visible
+        this.setVisible(true);
         this.addKeyListener(this);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         //Define an ActionListener to perform update at regular interval
-        ActionListener updateTask= _ -> {
+        Timer dinoTime = getTimer();
+        dinoTime.setDelay(500);
+        dinoTime.start();
+    }
+
+    public Timer getTimer() {
+        ActionListener updateTask= _ ->
+        {
             update(); //update the (x,y)position
             repaint();//refresh te JFrame, call back paintComponent
         };
         //Allocate Timer to run updateTask's actionPerformed() after every delay sec
-        ActionListener updateDinoTask= _ -> {
-            updateAnim(); //update the (x,y)position
+        ActionListener updateDinoTask= _ ->
+        {
+            updateAnim();
             repaint();//refresh te JFrame, call back paintComponent
         };
 
         Timer time = new Timer(UPDATE_PERIOD,updateTask);
         time.start();
 
-        Timer dinoTime = new Timer(UPDATE_PERIOD,updateDinoTask);
-        dinoTime.setDelay(500);
-        dinoTime.start();
-
-
-
+        return new Timer(UPDATE_PERIOD,updateDinoTask);
     }
+
     public void update ()
     {
-        if(obj.returnXCord()<10)
+        if(obj.returnXCord()<5)
         {
             obj.setObject();
+            yourScore++;
         }
-        yourScore+= speed;
-        obj.updateSpeed(speed);
+        if(yourScore==5*constant)
+            constant++;
         if (obj.returnXCord()<0)
         {
             obj.resetXCord();
-            if(yourScore>=yourScore+1400)
+            if(yourScore>=5*constant)
                 speed+=3;
         }
+        obj.updateSpeed(speed);
         if(dinoRect.intersects(imgRect))
         {
             System.out.println("Final Score: "+yourScore);
@@ -80,33 +86,35 @@ public class  Main extends JFrame implements KeyListener
 
     public void updateAnim()
     {
-        if(isDucking)
-        {
-            if(dinoAnim.equals("img/DinoDuckLeft.png"))
-                dinoAnim= "img/DinoDuckRight.png";
-            else if (dinoAnim.equals("img/DinoDuckRight.png"))
-                dinoAnim= "img/DinoDuckLeft.png";
 
-        }
-        else
+        switch (dinoAnim)
         {
-            if(dinoAnim.equals("img/DinoLeft.png"))
-                dinoAnim="img/DinoRight.png";
-            else if(dinoAnim.equals("img/DinoRight.png"))
-                dinoAnim="img/DinoLeft.png";
+            case "img/dino/dinoLeft.png" -> dinoAnim = "img/dino/dinoRight.png";
+            case "img/dino/dinoRight.png" -> dinoAnim = "img/dino/dinoLeft.png";
+            case "img/dino/dinoDuckLeft.png" -> dinoAnim = "img/dino/dinoDuckRight.png";
+            case "img/dino/dinoDuckRight.png" -> dinoAnim = "img/dino/dinoDuckLeft.png";
         }
 
-        if(obj.returnImage().equals("img/bird.png"))
+        file= obj.returnFileName();
+        if (file.equals("img/bird/birdDown.png") || file.equals("img/bird/birdUp.png"))
         {
-
+            if(file.equals("img/bird/birdDown.png"))
+            {
+                obj.setAnim("img/bird/birdUp.png");
+                obj.updateAnim();
+            }
+            else
+            {
+                obj.setAnim("img/bird/birdDown.png");
+                obj.updateAnim();
+            }
         }
+
 
     }
 
-
     private class DrawCanvas extends JPanel
     {
-
         @Override
         public void paintComponent(Graphics g)
         {
@@ -126,15 +134,10 @@ public class  Main extends JFrame implements KeyListener
     }
 
 
-
-
-    //The Entry main method
     public static void main(String[] args)
     {
-        //Let the constructor do the job
         SwingUtilities.invokeLater(Main::new);
     }
-
 
     @Override
     public void keyTyped(KeyEvent e) {
@@ -145,12 +148,12 @@ public class  Main extends JFrame implements KeyListener
     {
         switch (evt.getKeyCode()) {
             case KeyEvent.VK_SPACE:
-                dinoAnim="img/dino.png";
+                dinoAnim="img/dino/dino.png";
                 dinoY =160;
                 break;
 
             case KeyEvent.VK_DOWN:
-                dinoAnim="img/DinoDuckLeft.png";
+                dinoAnim="img/dino/dinoDuckLeft.png";
                 isDucking= true;
                 dinoWidth=118;
                 dinoHeight=85;
@@ -161,12 +164,11 @@ public class  Main extends JFrame implements KeyListener
     public void keyReleased(KeyEvent evt)
     {
         switch (evt.getKeyCode()) {
-
             case KeyEvent.VK_SPACE, KeyEvent.VK_DOWN:
                 dinoY =360;
                 dinoWidth=100;
                 dinoHeight=100;
-                dinoAnim="img/DinoLeft.png";
+                dinoAnim="img/dino/dinoLeft.png";
                 isDucking= false;
                 break;
         }
